@@ -41,7 +41,7 @@ def fetch_streak(username):
     Fetches GitHub streak data.
     The API returns an SVG; we parse the 'Current Streak' value from the XML.
     """
-    url = f"https://github-readme-streak-stats-vijaypur.vercel.app/?user={username}"
+    url = f"https://streak-stats.demolab.com/?user={username}"
     for delay in [1, 2, 4]:
         try:
             response = requests.get(url, timeout=15)
@@ -57,7 +57,8 @@ def fetch_streak(username):
                 if match:
                     return match.group(1).strip()
         except Exception:
-            time.sleep(delay)
+            pass
+        time.sleep(delay)
     return "N/A"
 
 
@@ -327,7 +328,7 @@ def svg_overwrite(filename, age_data, commit_data, streak_data, rank_data, repo_
     # Custom Prefixes
     # Add 10 to accommodate for the 2 commits done in the excluded repos which are too large to parse
     justify_format(root, 'commit_data', f"Commits: {commit_data + 2}", 0)
-    justify_format(root, 'rank_data', f"#{rank_data}", 0)
+    justify_format(root, 'rank_data', f"#{rank_data:,}" if isinstance(rank_data, int) else rank_data, 0)
     justify_format(root, 'loc_add', f"++ {loc_data[0]}", 0)
     justify_format(root, 'loc_del', f"-- {loc_data[1]}", 0)
 
